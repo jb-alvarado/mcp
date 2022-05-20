@@ -12,25 +12,6 @@ use std::{
 use multiqueue::{broadcast_queue, BroadcastReceiver};
 use question::{Answer, Question};
 
-fn writer(out: PathBuf, stream: BroadcastReceiver<(usize, [u8; 65536])>) {
-    let file = match File::create(out) {
-        Ok(f) => f,
-        Err(e) => {
-            println!("{e}");
-            exit(1);
-        }
-    };
-    let mut file_buffer = BufWriter::new(file);
-
-    for val in stream {
-        let (len, buf) = val;
-
-        if let Err(e) = file_buffer.write(&buf[..len]) {
-            println!("{e}");
-        };
-    }
-}
-
 pub fn validate(inputs: &Vec<String>, outputs: &Vec<String>) -> Result<(), &'static str> {
     let mut override_all = false;
 
@@ -93,6 +74,25 @@ pub fn validate(inputs: &Vec<String>, outputs: &Vec<String>) -> Result<(), &'sta
     }
 
     Ok(())
+}
+
+fn writer(out: PathBuf, stream: BroadcastReceiver<(usize, [u8; 65536])>) {
+    let file = match File::create(out) {
+        Ok(f) => f,
+        Err(e) => {
+            println!("{e}");
+            exit(1);
+        }
+    };
+    let mut file_buffer = BufWriter::new(file);
+
+    for val in stream {
+        let (len, buf) = val;
+
+        if let Err(e) = file_buffer.write(&buf[..len]) {
+            println!("{e}");
+        };
+    }
 }
 
 pub fn copy_process(
