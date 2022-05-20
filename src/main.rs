@@ -6,13 +6,13 @@ use mcp::{copy_process, validate};
 
 #[derive(Parser, Debug, Clone)]
 #[clap(version,
-    about = " Copy file to multiple targets .",
+    about = "Copy file to multiple targets",
     long_about = None)]
 struct Args {
     #[clap(
         short,
         long,
-        help = "Input file, to for copy process.",
+        help = "Input file, for copy process",
         multiple_values = true,
         required = true
     )]
@@ -21,13 +21,13 @@ struct Args {
     #[clap(
         short,
         long,
-        help = "Output file, can be used multiple times.",
+        help = "Output file, can be used multiple times",
         multiple_occurrences = true,
         required = true
     )]
     output: Vec<String>,
 
-    #[clap(short, long, help = "Show progress.")]
+    #[clap(short, long, help = "Show progress")]
     pub progress: bool,
 }
 
