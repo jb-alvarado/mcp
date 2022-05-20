@@ -34,9 +34,12 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    if validate(&args.input, &args.output) {
-        if let Err(e) = copy_process(args.input, args.output, args.progress) {
-            println!("{e}");
+    match validate(&args.input, &args.output) {
+        Ok(_) => {
+            if let Err(e) = copy_process(args.input, args.output, args.progress) {
+                println!("{e}");
+            }
         }
-    }
+        Err(e) => println!("{e}"),
+    };
 }

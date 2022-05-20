@@ -31,15 +31,13 @@ fn writer(out: PathBuf, stream: BroadcastReceiver<(usize, [u8; 65536])>) {
     }
 }
 
-pub fn validate(inputs: &Vec<String>, outputs: &Vec<String>) -> bool {
+pub fn validate(inputs: &Vec<String>, outputs: &Vec<String>) -> Result<(), &'static str> {
     let mut override_all = false;
 
     if inputs.len() > 1 {
         for out in outputs {
             if Path::new(&out).is_file() {
-                println!("Only one input and multiple output files, or multiple inputs and output folders supported!");
-
-                return false;
+                return Err("Only one input and multiple output files, or multiple inputs and output folders supported!");
             }
         }
     }
@@ -55,7 +53,7 @@ pub fn validate(inputs: &Vec<String>, outputs: &Vec<String>) -> bool {
             .ask();
 
             if answer == Some(Answer::NO) {
-                return false;
+                return Err("Cancel copy process.");
             }
 
             override_all = true;
@@ -66,9 +64,7 @@ pub fn validate(inputs: &Vec<String>, outputs: &Vec<String>) -> bool {
                 let in_path = Path::new(input);
 
                 if !in_path.is_file() {
-                    println!("Only existing files as input are supported!");
-
-                    return false;
+                    return Err("Only existing files as input are supported!");
                 }
 
                 let input_name = in_path.file_name().unwrap();
@@ -87,7 +83,7 @@ pub fn validate(inputs: &Vec<String>, outputs: &Vec<String>) -> bool {
                     .ask();
 
                     if answer == Some(Answer::NO) {
-                        return false;
+                        return Err("Cancel copy process.");
                     }
 
                     override_all = true;
@@ -96,7 +92,7 @@ pub fn validate(inputs: &Vec<String>, outputs: &Vec<String>) -> bool {
         }
     }
 
-    true
+    Ok(())
 }
 
 pub fn copy_process(
@@ -155,7 +151,7 @@ pub fn copy_process(
                         counter * 100 / file_size,
                         size as f64 / 1024.0 / 1024.0
                     );
-                    io::stdout().flush().expect("Flushing STDOUT not possible");
+                    io::stdout().flush()?;
 
                     size = 0;
                 }
