@@ -7,7 +7,9 @@ edition = "2021"
 [dependencies]
 clap = { version = "3.1", features = ["derive"] }
 multiqueue2 = { git = "https://github.com/abbychau/multiqueue2.git" }
+pathdiff = "0.2"
 question = "0.2"
+walkdir = "2"
 
 [profile.release]
 opt-level = 3
