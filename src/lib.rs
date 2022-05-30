@@ -130,7 +130,7 @@ pub fn copy_process(
     for input in file_list {
         let mut buffer = [0; 65536];
         let mut counter = 0;
-        let (send, recv) = broadcast_queue(92);
+        let (send, recv) = broadcast_queue(512);
         let input_name = input.path.file_name().unwrap();
         let file_size = input.path.metadata()?.len();
         let file = File::open(&input.path)?;
